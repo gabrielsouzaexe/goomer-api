@@ -2,7 +2,7 @@ import { RowDataPacket } from "mysql2";
 import Address from "../../../../domain/restaurant/vo/address";
 
 export interface RestaurantModel extends RowDataPacket {
-  id: string;
+  restaurant_uuid: string;
   name: string;
   street: string;
   number: number;

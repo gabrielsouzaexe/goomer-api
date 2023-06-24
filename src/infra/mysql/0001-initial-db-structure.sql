@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS `tab_restaurant` (
   `name` VARCHAR(200) NOT NULL DEFAULT '',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` TIMESTAMP,
-  PRIMARY KEY (`restaurant_id`)
+  PRIMARY KEY (`restaurant_id`),
+  UNIQUE KEY `restaurant_uuid_UNIQUE` (`restaurant_uuid`),
 );
 
 CREATE TABLE IF NOT EXISTS `tab_address` (

@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/gsouza/.nvm/versions/node/v18.15.0/bin/node /Users/gsouza/.yarn/bin/yarn.js add @types/mysql2
+  /Users/gsouza/.nvm/versions/node/v18.15.0/bin/node /Users/gsouza/.yarn/bin/yarn.js add @types/crypto -D
 
 PATH: 
   /Users/gsouza/.nvm/versions/node/v18.15.0/bin:/Users/gsouza/.nvm/versions/node/v14.21.3/bin:/Users/gsouza/.yarn/bin:/Users/gsouza/.config/yarn/global/node_modules/.bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/usr/local/laps:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/gsouza/.nvm/versions/node/v14.21.3/bin:/Users/gsouza/.local/share/zinit/polaris/bin:/Users/gsouza/.yarn/bin:/Users/gsouza/.config/yarn/global/node_modules/.bin:/Users/gsouza/.cargo/bin:/Users/gsouza/.local/bin:/Users/gsouza/.local/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fmysql2: Not found
+  Error: https://registry.yarnpkg.com/@types%2fcrypto: Not found
       at params.callback [as _callback] (/Users/gsouza/.yarn/lib/cli.js:66145:18)
       at self.callback (/Users/gsouza/.yarn/lib/cli.js:140890:22)
       at Request.emit (node:events:513:28)
@@ -48,7 +48,7 @@ npm manifest:
     },
     "dependencies": {
       "@types/express": "^4.17.17",
-      "@types/uuid": "^9.0.2",
+      "crypto": "^1.0.1",
       "dotenv": "^16.3.1",
       "express": "^4.18.2",
       "mysql2": "^3.4.0",
@@ -819,11 +819,6 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
     integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
   
-  "@types/uuid@^9.0.2":
-    version "9.0.2"
-    resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.2.tgz#ede1d1b1e451548d44919dc226253e32a6952c4b"
-    integrity sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==
-  
   "@types/yargs-parser@*":
     version "21.0.0"
     resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-21.0.0.tgz#0c60e537fa790f5f9472ed2776c2b71ec117351b"
@@ -1213,6 +1208,11 @@ Lockfile:
       path-key "^3.1.0"
       shebang-command "^2.0.0"
       which "^2.0.1"
+  
+  crypto@^1.0.1:
+    version "1.0.1"
+    resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
+    integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
   
   debug@2.6.9:
     version "2.6.9"
