@@ -7,6 +7,7 @@ const PORT: number = Number(process.env.PORT) || 5000;
 const app: Express = express();
 
 app.use(express.json());
+app.use("", () => "")
 
 app.listen(PORT, () => {
   console.log(`Server is listening to ${PORT}`);
