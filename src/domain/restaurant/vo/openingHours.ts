@@ -10,7 +10,6 @@ export const mapWeekDay: Record<number, string> = {
 
 export default class OpeningHours {
   constructor(
-    private id: string,
     private weekday: number,
     private startHour: Date,
     private endHour: Date
@@ -29,6 +28,10 @@ export default class OpeningHours {
 
     if (this.endHour === undefined) {
       throw new Error("End hour is required");
+    }
+
+    if (this.startHour < this.endHour) {
+      // TODO
     }
   }
 }

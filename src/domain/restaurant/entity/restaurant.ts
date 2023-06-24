@@ -5,12 +5,12 @@ import OpeningHours from "../vo/openingHours";
 export default class Restaurant extends Entity {
   constructor(
     id: string,
-    private name: string,
+    private _name: string,
     public address: Address,
-    public openingHours: OpeningHours
+    public openingHours?: OpeningHours
   ) {
     super();
-    this.id = id;
+    this._id = id;
     this.validate();
   }
 
@@ -19,7 +19,7 @@ export default class Restaurant extends Entity {
   }
 
   changeName(name: string) {
-    this.name = name;
+    this._name = name;
   }
 
   validate() {
@@ -29,5 +29,9 @@ export default class Restaurant extends Entity {
         message: "Name is required",
       });
     }
+  }
+
+  get name(): string {
+    return this._name;
   }
 }
