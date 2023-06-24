@@ -1,0 +1,4 @@
+{
+  "jestrunner.jestCommand": "yarn test",
+  "editor.tabSize": 2
+}
