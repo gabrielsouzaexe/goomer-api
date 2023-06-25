@@ -2,7 +2,9 @@ import Restaurant from "../../../../domain/restaurant/entity/restaurant";
 import Address from "../../../../domain/restaurant/vo/address";
 import IRestaurantRepository from "../../../../domain/restaurant/repository/restaurant.interface";
 import { RestaurantModel } from "./restaurant.model";
+import RestaurantNotFoundError from "../../../../usecase/errors/restaurant.notfound.error";
 import { Connection } from "mysql2/promise";
+import { connection } from "../../../mysql";
 
 let baseQuery = `
     SELECT 
@@ -19,10 +21,13 @@ let baseQuery = `
 `;
 
 export default class RestaurantRepository implements IRestaurantRepository {
-  constructor(private conn: Connection) {}
+  private conn: Connection;
+
+  constructor() {
+    this.conn = connection;
+  }
 
   async create(entity: Restaurant): Promise<void> {
-
     const [row]: any = await this.conn.execute(
       "INSERT INTO `tab_restaurant` SET restaurant_uuid = ?, name = ?",
       [entity.id, entity.name]
@@ -50,6 +55,10 @@ export default class RestaurantRepository implements IRestaurantRepository {
     const [rows] = await this.conn.execute<RestaurantModel[]>(query, [id]);
 
     const restaurantModel = rows.shift() as RestaurantModel;
+
+    if (restaurantModel === undefined) {
+      throw new RestaurantNotFoundError();
+    }
 
     const address = new Address(
       restaurantModel.street,

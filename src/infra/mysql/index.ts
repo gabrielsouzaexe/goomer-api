@@ -1,4 +1,6 @@
 import mysql, { Connection } from "mysql2/promise";
+import dotenv from "dotenv";
+dotenv.config();
 
 export let connection: Connection;
 
@@ -8,11 +10,11 @@ export const setup = async (): Promise<mysql.Connection> => {
   }
 
   connection = await mysql.createConnection({
-    host: "127.0.0.1",
-    port: 3306,
-    user: "root",
-    password: "challenge",
-    database: "db_goomer",
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   });
 
   return connection;
