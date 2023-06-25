@@ -56,8 +56,8 @@ restaurantRoute.post("/", async (req, res) => {
     const errMessage =
       err instanceof Error ? err.message : "Something went wrong. Try later.";
 
-    res.status(422).send(`Error at create: ${errMessage}`);
+    res.status(422).send({ message: `${errMessage}` });
   }
 
-  res.status(200).json(id);
+  res.status(201).json(id);
 });

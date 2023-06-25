@@ -3,7 +3,7 @@ import Address from "../../../../domain/restaurant/vo/address";
 import IRestaurantRepository from "../../../../domain/restaurant/repository/restaurant.interface";
 import { RestaurantModel } from "./restaurant.model";
 import RestaurantNotFoundError from "../../../../usecase/errors/restaurant.notfound.error";
-import { Connection } from "mysql2/promise";
+import { Connection, OkPacket } from "mysql2/promise";
 import { connection } from "../../../mysql";
 
 let baseQuery = `
@@ -28,7 +28,7 @@ export default class RestaurantRepository implements IRestaurantRepository {
   }
 
   async create(entity: Restaurant): Promise<void> {
-    const [row]: any = await this.conn.execute(
+    const [row] = await this.conn.execute<OkPacket>(
       "INSERT INTO `tab_restaurant` SET restaurant_uuid = ?, name = ?",
       [entity.id, entity.name]
     );
@@ -54,7 +54,7 @@ export default class RestaurantRepository implements IRestaurantRepository {
 
     const [rows] = await this.conn.execute<RestaurantModel[]>(query, [id]);
 
-    const restaurantModel = rows.shift() as RestaurantModel;
+    const restaurantModel = rows.shift();
 
     if (restaurantModel === undefined) {
       throw new RestaurantNotFoundError();
@@ -77,7 +77,7 @@ export default class RestaurantRepository implements IRestaurantRepository {
   async findAll(): Promise<Restaurant[]> {
     const [rows] = await this.conn.query<RestaurantModel[]>(baseQuery);
 
-    const restaurantList = rows.map((restaurantModel) => {
+    return rows.map((restaurantModel) => {
       const address = new Address(
         restaurantModel.street,
         restaurantModel.number,
@@ -91,8 +91,6 @@ export default class RestaurantRepository implements IRestaurantRepository {
         address
       );
     });
-
-    return restaurantList;
   }
 
   async delete(id: string): Promise<{} | undefined> {
