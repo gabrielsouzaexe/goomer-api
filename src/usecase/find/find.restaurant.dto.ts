@@ -3,7 +3,7 @@ export interface InputFindRestaurantDTO {
 }
 
 type OpeningHours = {
-  weekday_id: number[];
+  weekday_id: number;
   start_hour: string;
   end_hour: string;
 };

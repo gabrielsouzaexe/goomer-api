@@ -26,7 +26,7 @@ export default class FindpRestaurantUseCase {
         city: restaurant.address.city,
       },
       opening_hours: restaurant.openingHours.map((value) => ({
-        weekday_id: value.weekday,
+        weekday_id: value.weekday.shift() as number,
         start_hour: value.startHour,
         end_hour: value.endHour,
       })),

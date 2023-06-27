@@ -34,8 +34,6 @@ restaurantRoute.get(
       if (err instanceof RestaurantNotFoundError) {
         res.status(404).send({ message: err.message });
       }
-
-      console.log(err)
     }
 
     res.status(200).json(restaurant);
