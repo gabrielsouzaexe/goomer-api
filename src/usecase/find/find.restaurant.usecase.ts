@@ -25,6 +25,11 @@ export default class FindpRestaurantUseCase {
         zip: restaurant.address.zip,
         city: restaurant.address.city,
       },
+      opening_hours: restaurant.openingHours.map((value) => ({
+        weekday_id: value.weekday,
+        start_hour: value.startHour,
+        end_hour: value.endHour,
+      })),
     };
   }
 }

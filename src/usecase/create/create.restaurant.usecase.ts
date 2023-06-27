@@ -1,6 +1,7 @@
 import Restaurant from "../../domain/restaurant/entity/restaurant";
 import IRestaurantRepository from "../../domain/restaurant/repository/restaurant.interface";
 import Address from "../../domain/restaurant/vo/address";
+import OpeningHours from "../../domain/restaurant/vo/openingHours";
 import {
   InputCreateRestaurantDTO,
   OutputCreateRestaurantsDTO,
@@ -20,9 +21,19 @@ export default class CreateRestaurantUseCase {
       input.address.city
     );
 
+    const openingHours = input.opening_hours.map((opening) => {
+      return new OpeningHours(
+        opening.weekday.slice(),
+        opening.start_hour,
+        opening.end_hour
+      );
+    });
+
     const restaurant = new Restaurant(randomUUID(), input.name, address);
 
-    await this.restaurantRepository.create(restaurant);
+    await this.restaurantRepository.create(
+      restaurant.withOpeningHours(openingHours)
+    );
 
     return { id: restaurant.id };
   }

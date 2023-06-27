@@ -1,12 +1,13 @@
 import Restaurant from "../../../../domain/restaurant/entity/restaurant";
 import Address from "../../../../domain/restaurant/vo/address";
+import OpeningHours from "../../../../domain/restaurant/vo/openingHours";
 import IRestaurantRepository from "../../../../domain/restaurant/repository/restaurant.interface";
-import { RestaurantModel } from "./restaurant.model";
+import { OpeningHoursModel, RestaurantModel } from "./restaurant.model";
 import RestaurantNotFoundError from "../../../../usecase/errors/restaurant.notfound.error";
 import { Connection, OkPacket } from "mysql2/promise";
 import { connection } from "../../../mysql";
 
-let baseQuery = `
+const baseQuery = `
     SELECT 
       tr.restaurant_id,
       restaurant_uuid,
@@ -16,8 +17,9 @@ let baseQuery = `
       zip_code,
       city
     FROM tab_restaurant tr 
-    LEFT JOIN tab_address ta 
-    ON tr.restaurant_id = ta.restaurant_id
+    LEFT JOIN tab_address ta ON tr.restaurant_id = ta.restaurant_id
+    LEFT JOIN tab_opening_hours toh ON tr.restaurant_id = toh.restaurant_id
+    LEFT JOIN tab_weekday tw ON tw.weekday_id = toh.weekday_id
 `;
 
 export default class RestaurantRepository implements IRestaurantRepository {
@@ -43,6 +45,15 @@ export default class RestaurantRepository implements IRestaurantRepository {
         entity.address.city,
       ]
     );
+
+    for (const hours of entity.openingHours) {
+      for (const day of hours.weekday) {
+        await this.conn.execute(
+          "INSERT INTO `tab_opening_hours` SET restaurant_id = ?, weekday_id = ?, start_hour = ?, end_hour = ?",
+          [row.insertId, day, hours.startHour, hours.endHour]
+        );
+      }
+    }
   }
 
   async update(entity: Restaurant): Promise<void> {
@@ -60,28 +71,38 @@ export default class RestaurantRepository implements IRestaurantRepository {
       throw new RestaurantNotFoundError();
     }
 
+    let openingHours = await this.findOpeningHours(
+      restaurantModel.restaurant_id
+    );
+
     const address = new Address(
       restaurantModel.street,
       restaurantModel.number,
-      restaurantModel.zip,
+      restaurantModel.zip_code,
       restaurantModel.city
     );
 
-    return new Restaurant(
+    const restaurant = new Restaurant(
       restaurantModel.restaurant_uuid,
       restaurantModel.name,
       address
     );
+
+    return restaurant.withOpeningHours(openingHours);
   }
 
   async findAll(): Promise<Restaurant[]> {
     const [rows] = await this.conn.query<RestaurantModel[]>(baseQuery);
 
+    if (rows.length === 0) {
+      return [];
+    }
+
     return rows.map((restaurantModel) => {
       const address = new Address(
         restaurantModel.street,
         restaurantModel.number,
-        restaurantModel.zip,
+        restaurantModel.zip_code,
         restaurantModel.city
       );
 
@@ -95,5 +116,26 @@ export default class RestaurantRepository implements IRestaurantRepository {
 
   async delete(id: string): Promise<{} | undefined> {
     return undefined;
+  }
+
+  async findOpeningHours(id: number): Promise<OpeningHours[]> {
+    const query = `
+        SELECT 
+          weekday_id,
+          start_hour,
+          end_hour 
+        FROM tab_opening_hours 
+        WHERE restaurant_id = ?
+      `;
+
+    const [rows] = await this.conn.execute<OpeningHoursModel[]>(query, [id]);
+
+    return rows.map((openingHour) => {
+      return new OpeningHours(
+        [openingHour.weekday_id],
+        openingHour.start_hour,
+        openingHour.end_hour
+      );
+    });
   }
 }

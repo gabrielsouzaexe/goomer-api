@@ -3,19 +3,22 @@ import Address from "../vo/address";
 import OpeningHours from "../vo/openingHours";
 
 export default class Restaurant extends Entity {
-  constructor(
-    id: string,
-    private _name: string,
-    public address: Address,
-    public openingHours?: OpeningHours
-  ) {
+  public openingHours!: OpeningHours[];
+
+  constructor(id: string, private _name: string, public address: Address) {
     super();
     this._id = id;
     this.validate();
   }
 
-  changeAddress(address: Address) {
+  withAddress(address: Address): Restaurant {
     this.address = address;
+    return this;
+  }
+
+  withOpeningHours(openingHours: OpeningHours[]): Restaurant {
+    this.openingHours = openingHours;
+    return this;
   }
 
   changeName(name: string) {

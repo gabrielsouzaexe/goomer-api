@@ -1,5 +1,4 @@
 import { RowDataPacket } from "mysql2";
-import Address from "../../../../domain/restaurant/vo/address";
 
 export interface RestaurantModel extends RowDataPacket {
   restaurant_uuid: string;
@@ -8,4 +7,10 @@ export interface RestaurantModel extends RowDataPacket {
   number: number;
   zip: string;
   city: string;
+}
+
+export interface OpeningHoursModel extends RowDataPacket {
+  weekday_id: number;
+  start_hour: string;
+  end_hour: string;
 }
