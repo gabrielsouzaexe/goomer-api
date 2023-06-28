@@ -71,7 +71,7 @@ export default class RestaurantRepository implements IRestaurantRepository {
       throw new RestaurantNotFoundError();
     }
 
-    let openingHours = await this.findOpeningHours(
+    const openingHours = await this.findOpeningHours(
       restaurantModel.restaurant_id
     );
 
@@ -114,8 +114,13 @@ export default class RestaurantRepository implements IRestaurantRepository {
     });
   }
 
-  async delete(id: string): Promise<{} | undefined> {
-    return undefined;
+  async delete(id: string): Promise<void> {
+    await this.conn.execute(
+      "DELETE FROM tab_restaurant WHERE restaurant_uuid = ?",
+      [id]
+    );
+
+    return;
   }
 
   async findOpeningHours(id: number): Promise<OpeningHours[]> {

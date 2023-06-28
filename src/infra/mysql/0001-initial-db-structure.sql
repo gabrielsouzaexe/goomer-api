@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `tab_address` (
   `zip_code` VARCHAR(16) NOT NULL,
   `city` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`restaurant_id`),
-  CONSTRAINT `fk_tab_address_tab_restaurant` FOREIGN KEY (`restaurant_id`) REFERENCES `tab_restaurant` (`restaurant_id`)
+  CONSTRAINT `fk_tab_address_tab_restaurant` FOREIGN KEY (`restaurant_id`) REFERENCES `tab_restaurant` (`restaurant_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS `tab_weekday` (
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `tab_opening_hours` (
   `end_hour` TIME NOT NULL,
   PRIMARY KEY (`opening_hour_id`),
   KEY (`restaurant_id`),
-  CONSTRAINT `fk_tab_opening_hours_tab_restaurant` FOREIGN KEY (`restaurant_id`) REFERENCES `tab_restaurant` (`restaurant_id`),
+  CONSTRAINT `fk_tab_opening_hours_tab_restaurant` FOREIGN KEY (`restaurant_id`) REFERENCES `tab_restaurant` (`restaurant_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_tab_opening_hours_tab_weekday` FOREIGN KEY (`weekday_id`) REFERENCES `tab_weekday` (`weekday_id`)
 );
 

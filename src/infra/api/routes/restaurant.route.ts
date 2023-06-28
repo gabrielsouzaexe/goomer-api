@@ -3,6 +3,7 @@ import RestaurantRepository from "../../restaurant/repository/mysql/restaurant.r
 import ListRestaurantUseCase from "../../../usecase/list/list.restaurant.usecase";
 import FindpRestaurantUseCase from "../../../usecase/find/find.restaurant.usecase";
 import CreateRestaurantUseCase from "../../../usecase/create/create.restaurant.usecase";
+import DeleteRestaurantUseCase from "../../../usecase/delete/delete.restaurant.usecase";
 import RestaurantNotFoundError from "../../../usecase/errors/restaurant.notfound.error";
 import { InputCreateRestaurantDTO } from "../../../usecase/create/create.restaurant.dto";
 
@@ -51,12 +52,29 @@ restaurantRoute.post(
     try {
       id = await usecase.execute(req.body);
     } catch (err) {
-      const errMessage =
-        err instanceof Error ? err.message : "Something went wrong. Try later.";
-
-      res.status(422).send({ message: `${errMessage}` });
+      if (err instanceof Error) {
+        res.status(422).send({ message: err.message });
+      }
     }
 
     res.status(201).json(id);
+  }
+);
+
+restaurantRoute.delete(
+  "/:restaurant_uuid",
+  async (req: Request, res: Response) => {
+    const restaurantRepository = new RestaurantRepository();
+    const usecase = new DeleteRestaurantUseCase(restaurantRepository);
+
+    try {
+      await usecase.execute({ id: req.params.restaurant_uuid });
+    } catch (err) {
+      if (err instanceof RestaurantNotFoundError) {
+        res.status(404).send({ message: err.message });
+      }
+    }
+
+    res.status(200).send();
   }
 );

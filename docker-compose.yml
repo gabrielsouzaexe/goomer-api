@@ -10,3 +10,5 @@ services:
     environment:
       MYSQL_DATABASE: db_goomer
       MYSQL_ROOT_PASSWORD: challenge
+    volumes:
+      - "./src/infra/mysql/0001-initial-db-structure.sql:/docker-entrypoint-initdb.d/init.sql"

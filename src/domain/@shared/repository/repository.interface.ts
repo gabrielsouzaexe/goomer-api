@@ -3,5 +3,5 @@ export default interface IRepository<T> {
   update(entity: T): Promise<void>;
   find(id: string): Promise<T>;
   findAll(): Promise<T[]>;
-  delete(id: string): Promise<{} | undefined>;
+  delete(id: string): Promise<void>;
 }
