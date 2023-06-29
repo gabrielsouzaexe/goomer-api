@@ -30,7 +30,7 @@ export default class OpeningHours {
       throw new Error("End hour is required");
     }
 
-    for (const day of this._weekday) {
+    for (const day of this.weekday) {
       if (!mapWeekDay[day]) {
         throw new Error("Invalid weekday");
       }

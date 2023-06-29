@@ -14,3 +14,7 @@ export interface OpeningHoursModel extends RowDataPacket {
   start_hour: string;
   end_hour: string;
 }
+
+export interface ExistsByUUID extends RowDataPacket {
+  count: number;
+}

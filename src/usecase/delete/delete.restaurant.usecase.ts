@@ -10,11 +10,7 @@ export default class DeleteRestaurantUseCase {
   async execute(
     input: InputDeleteRestaurantDTO
   ): Promise<OutputDeleteRestaurantDTO> {
-    Promise.all([
-      await this.restaurantRepository.find(input.id),
-      await this.restaurantRepository.delete(input.id),
-    ]);
-
+    await this.restaurantRepository.delete(input.id);
     return;
   }
 }

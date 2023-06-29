@@ -3,9 +3,10 @@ import Address from "../vo/address";
 import OpeningHours from "../vo/openingHours";
 
 export default class Restaurant extends Entity {
+  public address!: Address;
   public openingHours!: OpeningHours[];
 
-  constructor(id: string, private _name: string, public address: Address) {
+  constructor(id: string, private _name: string) {
     super();
     this._id = id;
     this.validate();

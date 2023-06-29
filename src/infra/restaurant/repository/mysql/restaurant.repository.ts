@@ -2,7 +2,11 @@ import Restaurant from "../../../../domain/restaurant/entity/restaurant";
 import Address from "../../../../domain/restaurant/vo/address";
 import OpeningHours from "../../../../domain/restaurant/vo/openingHours";
 import IRestaurantRepository from "../../../../domain/restaurant/repository/restaurant.interface";
-import { OpeningHoursModel, RestaurantModel } from "./restaurant.model";
+import {
+  ExistsByUUID,
+  OpeningHoursModel,
+  RestaurantModel,
+} from "./restaurant.model";
 import RestaurantNotFoundError from "../../../../usecase/errors/restaurant.notfound.error";
 import { Connection, OkPacket } from "mysql2/promise";
 import { connection } from "../../../mysql";
@@ -57,7 +61,10 @@ export default class RestaurantRepository implements IRestaurantRepository {
   }
 
   async update(entity: Restaurant): Promise<void> {
-    this.conn.execute("UPDATE tab_restaurant SET");
+    await this.conn.execute<OkPacket>(
+      "UPDATE tab_restaurant SET name = ? WHERE restaurant_uuid = ?",
+      [entity.name, entity.id]
+    );
   }
 
   async find(id: string): Promise<Restaurant> {
@@ -84,11 +91,10 @@ export default class RestaurantRepository implements IRestaurantRepository {
 
     const restaurant = new Restaurant(
       restaurantModel.restaurant_uuid,
-      restaurantModel.name,
-      address
+      restaurantModel.name
     );
 
-    return restaurant.withOpeningHours(openingHours);
+    return restaurant.withAddress(address).withOpeningHours(openingHours);
   }
 
   async findAll(): Promise<Restaurant[]> {
@@ -106,15 +112,22 @@ export default class RestaurantRepository implements IRestaurantRepository {
         restaurantModel.city
       );
 
-      return new Restaurant(
+      const restaurant = new Restaurant(
         restaurantModel.restaurant_uuid,
-        restaurantModel.name,
-        address
+        restaurantModel.name
       );
+
+      return restaurant.withAddress(address);
     });
   }
 
   async delete(id: string): Promise<void> {
+    const exists = await this.existsByUUID(id);
+
+    if (!exists) {
+      throw new RestaurantNotFoundError();
+    }
+
     await this.conn.execute(
       "DELETE FROM tab_restaurant WHERE restaurant_uuid = ?",
       [id]
@@ -142,5 +155,14 @@ export default class RestaurantRepository implements IRestaurantRepository {
         openingHour.end_hour
       );
     });
+  }
+
+  async existsByUUID(uuid: string): Promise<boolean> {
+    const [rows] = await this.conn.execute<ExistsByUUID[]>(
+      "SELECT count(*) AS count FROM tab_restaurant WHERE restaurant_uuid = ?",
+      [uuid]
+    );
+
+    return rows.shift()!.count > 0;
   }
 }

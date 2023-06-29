@@ -3,17 +3,18 @@ import IRestaurantRepository from "../../domain/restaurant/repository/restaurant
 import Address from "../../domain/restaurant/vo/address";
 import OpeningHours from "../../domain/restaurant/vo/openingHours";
 import {
-  InputCreateRestaurantDTO,
-  OutputCreateRestaurantsDTO,
-} from "./create.restaurant.dto";
-import { randomUUID } from "crypto";
+  InputUpdateRestaurantDTO,
+  OutputUpdateRestaurantDTO,
+} from "./update.restaurant.dto";
 
-export default class CreateRestaurantUseCase {
+export default class UpdateRestaurantUseCase {
   constructor(private restaurantRepository: IRestaurantRepository) {}
 
   async execute(
-    input: InputCreateRestaurantDTO
-  ): Promise<OutputCreateRestaurantsDTO> {
+    input: InputUpdateRestaurantDTO
+  ): Promise<OutputUpdateRestaurantDTO> {
+    const restaurant = new Restaurant(input.id, input.name);
+
     const address = new Address(
       input.address.street,
       input.address.number,
@@ -29,12 +30,10 @@ export default class CreateRestaurantUseCase {
       );
     });
 
-    const restaurant = new Restaurant(randomUUID(), input.name);
-
-    await this.restaurantRepository.create(
+    await this.restaurantRepository.update(
       restaurant.withAddress(address).withOpeningHours(openingHours)
     );
 
-    return { id: restaurant.id };
+    return;
   }
 }
