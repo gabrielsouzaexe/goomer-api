@@ -12,3 +12,12 @@ services:
       MYSQL_ROOT_PASSWORD: challenge
     volumes:
       - "./src/infra/mysql/0001-initial-db-structure.sql:/docker-entrypoint-initdb.d/init.sql"
+
+  redis:
+     container_name: goomer_redis
+     image: redis
+     init: true
+     restart: always
+     command: redis-server --save 20 1 --loglevel warning
+     ports:
+       - "6379:6379"

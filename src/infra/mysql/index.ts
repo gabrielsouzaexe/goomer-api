@@ -4,7 +4,7 @@ dotenv.config();
 
 export let connection: Connection;
 
-export const setup = async (): Promise<mysql.Connection> => {
+const setup = async () => {
   if (connection) {
     return connection;
   }
@@ -16,8 +16,6 @@ export const setup = async (): Promise<mysql.Connection> => {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
   });
-
-  return connection;
 };
 
 setup();

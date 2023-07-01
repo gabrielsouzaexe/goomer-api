@@ -10,6 +10,8 @@ import {
 import RestaurantNotFoundError from "../../../../usecase/errors/restaurant.notfound.error";
 import { Connection, OkPacket } from "mysql2/promise";
 import { connection } from "../../../mysql";
+import { RedisClientType } from "redis";
+import { redis } from "../../../redis";
 
 const baseQuery = `
     SELECT 
@@ -28,9 +30,11 @@ const baseQuery = `
 
 export default class RestaurantRepository implements IRestaurantRepository {
   private conn: Connection;
+  private cache: RedisClientType;
 
   constructor() {
     this.conn = connection;
+    this.cache = redis;
   }
 
   async create(entity: Restaurant): Promise<void> {
@@ -98,13 +102,21 @@ export default class RestaurantRepository implements IRestaurantRepository {
   }
 
   async findAll(): Promise<Restaurant[]> {
+    const cachedResults = await this.cache.get(
+      `${RestaurantRepository.name}.findAll`
+    );
+
+    if (cachedResults !== null) {
+      return JSON.parse(cachedResults) as Restaurant[];
+    }
+
     const [rows] = await this.conn.query<RestaurantModel[]>(baseQuery);
 
     if (rows.length === 0) {
       return [];
     }
 
-    return rows.map((restaurantModel) => {
+    const restaurants = rows.map((restaurantModel) => {
       const address = new Address(
         restaurantModel.street,
         restaurantModel.number,
@@ -119,6 +131,12 @@ export default class RestaurantRepository implements IRestaurantRepository {
 
       return restaurant.withAddress(address);
     });
+
+    await this.cache.set(
+      `${RestaurantRepository.name}.findAll`,
+      JSON.stringify(restaurants)
+    );
+    return restaurants;
   }
 
   async delete(id: string): Promise<void> {
