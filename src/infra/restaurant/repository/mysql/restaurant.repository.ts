@@ -24,8 +24,6 @@ const baseQuery = `
       city
     FROM tab_restaurant tr 
     LEFT JOIN tab_address ta ON tr.restaurant_id = ta.restaurant_id
-    LEFT JOIN tab_opening_hours toh ON tr.restaurant_id = toh.restaurant_id
-    LEFT JOIN tab_weekday tw ON tw.weekday_id = toh.weekday_id
 `;
 
 export default class RestaurantRepository implements IRestaurantRepository {
@@ -72,7 +70,11 @@ export default class RestaurantRepository implements IRestaurantRepository {
   }
 
   async find(id: string): Promise<Restaurant> {
-    const query = baseQuery + `WHERE restaurant_uuid = ? LIMIT 1`;
+    const joins = `
+      LEFT JOIN tab_opening_hours toh ON tr.restaurant_id = toh.restaurant_id
+      LEFT JOIN tab_weekday tw ON tw.weekday_id = toh.weekday_id
+    `;
+    const query = baseQuery + joins + `WHERE restaurant_uuid = ? LIMIT 1`;
 
     const [rows] = await this.conn.execute<RestaurantModel[]>(query, [id]);
 
@@ -102,12 +104,19 @@ export default class RestaurantRepository implements IRestaurantRepository {
   }
 
   async findAll(): Promise<Restaurant[]> {
-    const cachedResults = await this.cache.get(
-      `${RestaurantRepository.name}.findAll`
-    );
+    const cacheKey = `${RestaurantRepository.name}.${this.findAll.name}`;
+
+    const cachedResults = await this.cache.get(cacheKey);
 
     if (cachedResults !== null) {
-      return JSON.parse(cachedResults) as Restaurant[];
+      const parsed = JSON.parse(cachedResults);
+
+      return parsed.map((item: any) => {
+        const restaurant = Object.assign(Restaurant.prototype, item);
+        const address = Object.assign(Address.prototype, item.address);
+
+        return restaurant.withAddress(address);
+      });
     }
 
     const [rows] = await this.conn.query<RestaurantModel[]>(baseQuery);
@@ -132,10 +141,8 @@ export default class RestaurantRepository implements IRestaurantRepository {
       return restaurant.withAddress(address);
     });
 
-    await this.cache.set(
-      `${RestaurantRepository.name}.findAll`,
-      JSON.stringify(restaurants)
-    );
+    await this.cache.set(cacheKey, JSON.stringify(restaurants));
+
     return restaurants;
   }
 
