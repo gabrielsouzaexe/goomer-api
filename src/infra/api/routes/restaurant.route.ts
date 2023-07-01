@@ -6,8 +6,8 @@ import CreateRestaurantUseCase from "../../../usecase/create/create.restaurant.u
 import DeleteRestaurantUseCase from "../../../usecase/delete/delete.restaurant.usecase";
 import RestaurantNotFoundError from "../../../usecase/errors/restaurant.notfound.error";
 import { InputCreateRestaurantDTO } from "../../../usecase/create/create.restaurant.dto";
-import UpdateRestaurantUseCase from "../../../usecase/update/update.restaurant.usecase";
 import { InputUpdateRestaurantDTO } from "../../../usecase/update/update.restaurant.dto";
+import UpdateRestaurantUseCase from "../../../usecase/update/update.restaurant.usecase";
 
 export const restaurantRoute: Router = express.Router();
 

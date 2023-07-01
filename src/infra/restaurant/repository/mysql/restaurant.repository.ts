@@ -133,7 +133,7 @@ export default class RestaurantRepository implements IRestaurantRepository {
       return restaurant.withAddress(address);
     });
 
-    await this.cache.set(cacheKey, JSON.stringify(restaurants));
+    await this.cache.set(cacheKey, JSON.stringify(restaurants), { EX: 60 });
 
     return restaurants;
   }
@@ -187,8 +187,20 @@ export default class RestaurantRepository implements IRestaurantRepository {
     const parsed = JSON.parse(cachedResults);
 
     return parsed.map((item: any) => {
-      const restaurant = Object.assign(Restaurant.prototype, item);
-      const address = Object.assign(Address.prototype, item.address);
+      const cachedAddress = Object.assign(Address.prototype, item.address);
+      const cachedRestaurant = Object.assign(Restaurant.prototype, item);
+
+      const address = new Address(
+        cachedAddress.street,
+        cachedAddress.number,
+        cachedAddress.zip,
+        cachedAddress.city
+      );
+
+      const restaurant = new Restaurant(
+        cachedRestaurant.id,
+        cachedRestaurant.name
+      );
 
       return restaurant.withAddress(address);
     });
