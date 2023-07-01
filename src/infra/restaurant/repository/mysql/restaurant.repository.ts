@@ -105,18 +105,10 @@ export default class RestaurantRepository implements IRestaurantRepository {
 
   async findAll(): Promise<Restaurant[]> {
     const cacheKey = `${RestaurantRepository.name}.${this.findAll.name}`;
-
     const cachedResults = await this.cache.get(cacheKey);
 
     if (cachedResults !== null) {
-      const parsed = JSON.parse(cachedResults);
-
-      return parsed.map((item: any) => {
-        const restaurant = Object.assign(Restaurant.prototype, item);
-        const address = Object.assign(Address.prototype, item.address);
-
-        return restaurant.withAddress(address);
-      });
+      return this.cachedRestaurantList(cachedResults);
     }
 
     const [rows] = await this.conn.query<RestaurantModel[]>(baseQuery);
@@ -189,5 +181,16 @@ export default class RestaurantRepository implements IRestaurantRepository {
     );
 
     return rows.shift()!.count > 0;
+  }
+
+  cachedRestaurantList(cachedResults: string) {
+    const parsed = JSON.parse(cachedResults);
+
+    return parsed.map((item: any) => {
+      const restaurant = Object.assign(Restaurant.prototype, item);
+      const address = Object.assign(Address.prototype, item.address);
+
+      return restaurant.withAddress(address);
+    });
   }
 }

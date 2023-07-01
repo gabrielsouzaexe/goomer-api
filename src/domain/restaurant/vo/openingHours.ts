@@ -46,10 +46,16 @@ export default class OpeningHours {
   }
 
   get startHour(): string {
-    return this._startHour;
+    return this._startHour
+      .split(":")
+      .filter((_, index) => index !== 2)
+      .join(":");
   }
 
   get endHour(): string {
-    return this._endHour;
+    return this._endHour
+      .split(":")
+      .filter((_, index) => index !== 2)
+      .join(":");
   }
 }
