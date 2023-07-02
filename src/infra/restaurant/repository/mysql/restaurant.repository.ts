@@ -53,12 +53,10 @@ export default class RestaurantRepository implements IRestaurantRepository {
     );
 
     for (const hours of entity.openingHours) {
-      for (const day of hours.weekday) {
-        await this.conn.execute(
-          "INSERT INTO `tab_opening_hours` SET restaurant_id = ?, weekday_id = ?, start_hour = ?, end_hour = ?",
-          [row.insertId, day, hours.startHour, hours.endHour]
-        );
-      }
+      await this.conn.execute(
+        "INSERT INTO `tab_opening_hours` SET restaurant_id = ?, weekday_id = ?, start_hour = ?, end_hour = ?",
+        [row.insertId, hours.weekday, hours.startHour, hours.endHour]
+      );
     }
   }
 
@@ -167,7 +165,7 @@ export default class RestaurantRepository implements IRestaurantRepository {
 
     return rows.map((openingHour) => {
       return new OpeningHours(
-        [openingHour.weekday_id],
+        openingHour.weekday_id,
         openingHour.start_hour,
         openingHour.end_hour
       );

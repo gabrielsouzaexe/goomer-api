@@ -1,13 +1,13 @@
-import express, { Router, Request, Response } from "express";
-import RestaurantRepository from "../../restaurant/repository/mysql/restaurant.repository";
-import ListRestaurantUseCase from "../../../usecase/list/list.restaurant.usecase";
-import FindpRestaurantUseCase from "../../../usecase/find/find.restaurant.usecase";
+import express, { Request, Response, Router } from "express";
+import { InputCreateRestaurantDTO } from "../../../usecase/create/create.restaurant.dto";
 import CreateRestaurantUseCase from "../../../usecase/create/create.restaurant.usecase";
 import DeleteRestaurantUseCase from "../../../usecase/delete/delete.restaurant.usecase";
 import RestaurantNotFoundError from "../../../usecase/errors/restaurant.notfound.error";
-import { InputCreateRestaurantDTO } from "../../../usecase/create/create.restaurant.dto";
+import FindRestaurantUseCase from "../../../usecase/find/find.restaurant.usecase";
+import ListRestaurantUseCase from "../../../usecase/list/list.restaurant.usecase";
 import { InputUpdateRestaurantDTO } from "../../../usecase/update/update.restaurant.dto";
 import UpdateRestaurantUseCase from "../../../usecase/update/update.restaurant.usecase";
+import RestaurantRepository from "../../restaurant/repository/mysql/restaurant.repository";
 
 export const restaurantRoute: Router = express.Router();
 
@@ -25,7 +25,7 @@ restaurantRoute.get(
   "/:restaurant_uuid",
   async (req: Request, res: Response) => {
     const restaurantRepository = new RestaurantRepository();
-    const usecase = new FindpRestaurantUseCase(restaurantRepository);
+    const usecase = new FindRestaurantUseCase(restaurantRepository);
 
     let restaurant;
 

@@ -9,7 +9,7 @@ export default class Address {
   }
 
   validate() {
-    if (this.street === undefined) {
+    if (this.street.length === 0) {
       throw new Error("Street is required");
     }
 
@@ -17,11 +17,11 @@ export default class Address {
       throw new Error("Number is required");
     }
 
-    if (this.zip === undefined) {
+    if (this.zip.length === 0) {
       throw new Error("Zip is required");
     }
 
-    if (this.city === undefined) {
+    if (this.city.length === 0) {
       throw new Error("City is required");
     }
   }

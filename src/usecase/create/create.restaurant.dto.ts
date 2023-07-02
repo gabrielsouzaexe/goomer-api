@@ -1,5 +1,5 @@
 type OpeningHours = {
-  weekday: number[];
+  weekday: number;
   start_hour: string;
   end_hour: string;
 };

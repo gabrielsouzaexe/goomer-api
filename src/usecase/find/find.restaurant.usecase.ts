@@ -5,7 +5,7 @@ import {
   OutputFindRestaurantDTO,
 } from "./find.restaurant.dto";
 
-export default class FindpRestaurantUseCase {
+export default class FindRestaurantUseCase {
   constructor(private restaurantRepository: IRestaurantRepository) {}
 
   async execute(
@@ -26,7 +26,7 @@ export default class FindpRestaurantUseCase {
         city: restaurant.address.city,
       },
       opening_hours: restaurant.openingHours.map((value) => ({
-        weekday_id: value.weekday.shift() as number,
+        weekday_id: value.weekday,
         start_hour: value.startHour,
         end_hour: value.endHour,
       })),

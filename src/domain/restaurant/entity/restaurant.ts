@@ -1,4 +1,5 @@
 import Entity from "../../@shared/entity/entity.abstract";
+import NotificationError from "../../@shared/notification/notification.error";
 import Address from "../vo/address";
 import OpeningHours from "../vo/openingHours";
 
@@ -10,6 +11,10 @@ export default class Restaurant extends Entity {
     super();
     this._id = id;
     this.validate();
+
+    if (this.notifications.hasErrors()) {
+      throw new NotificationError(this.notifications.getErrors());
+    }
   }
 
   withAddress(address: Address): Restaurant {
@@ -31,6 +36,13 @@ export default class Restaurant extends Entity {
       this.notifications.add({
         context: "Restaurant",
         message: "Name is required",
+      });
+    }
+
+    if (this.id === "") {
+      this.notifications.add({
+        context: "Restaurant",
+        message: "ID is required",
       });
     }
   }

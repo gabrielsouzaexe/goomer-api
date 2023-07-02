@@ -10,7 +10,7 @@ export const mapWeekDay: Record<number, string> = {
 
 export default class OpeningHours {
   constructor(
-    private _weekday: number[],
+    private _weekday: number,
     private _startHour: string,
     private _endHour: string
   ) {
@@ -18,7 +18,7 @@ export default class OpeningHours {
   }
 
   validate() {
-    if (this.weekday.length > 7 || this.weekday.length <= 0) {
+    if (this.weekday > 7 || this.weekday <= 0) {
       throw new Error("Invalid number of working days");
     }
 
@@ -30,10 +30,8 @@ export default class OpeningHours {
       throw new Error("End hour is required");
     }
 
-    for (const day of this.weekday) {
-      if (!mapWeekDay[day]) {
-        throw new Error("Invalid weekday");
-      }
+    if (!mapWeekDay[this.weekday]) {
+      throw new Error("Invalid weekday");
     }
 
     if (this.startHour < this.endHour) {
@@ -41,7 +39,7 @@ export default class OpeningHours {
     }
   }
 
-  get weekday(): number[] {
+  get weekday(): number {
     return this._weekday;
   }
 

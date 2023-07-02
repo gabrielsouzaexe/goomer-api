@@ -23,7 +23,7 @@ export default class CreateRestaurantUseCase {
 
     const openingHours = input.opening_hours.map((opening) => {
       return new OpeningHours(
-        opening.weekday.slice(),
+        opening.weekday,
         opening.start_hour,
         opening.end_hour
       );
